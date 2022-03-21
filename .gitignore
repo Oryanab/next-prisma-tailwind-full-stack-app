@@ -5,7 +5,7 @@
 /.pnp
 .pnp.js
 commands.md
-
+.env
 # testing
 /coverage
 

@@ -5,11 +5,16 @@ import { trpc } from "../utils/trpc";
 import React, { useState } from "react";
 
 const Home: NextPage = () => {
-  const [ids, setIds] = useState(() => getOptionsForVote());
+  const [ids, updateIds] = useState(() => getOptionsForVote());
   const [first, second] = ids;
   const firstPokemon = trpc.useQuery(["get-pokemon-by-id", { id: first! }]);
   const secondPokemon = trpc.useQuery(["get-pokemon-by-id", { id: second! }]);
   if (firstPokemon.isLoading || secondPokemon.isLoading) return null;
+
+  const voteForRoundest = (selected: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    updateIds(getOptionsForVote());
+  };
 
   return (
     <div>
@@ -17,7 +22,7 @@ const Home: NextPage = () => {
         <div className="text-2xl text-center">first</div>
         <div className="p-2"></div>
         <div className="border rounded p-5 flex justify-between items-center max-w-4xl pb-10">
-          <div className="w-64 h-64 flex flex-col ">
+          <div className="w-70 h-70 flex flex-col">
             <img
               className="w-64 h-64"
               src={firstPokemon.data?.sprites.front_default!}
@@ -26,9 +31,16 @@ const Home: NextPage = () => {
             <div className="text-center capitalize mt-[-1rem]">
               {firstPokemon.data?.name!}
             </div>
+            <button
+              className="rounded-none mt-10 bg-white text-black"
+              onClick={(e) => first && voteForRoundest(first, e)}
+            >
+              Rounder
+            </button>
           </div>
+
           <div className="p-20">Vs</div>
-          <div className="w-64 h-64 flex flex-col">
+          <div className="w-70 h-70 flex flex-col">
             <img
               className="w-64 h-64"
               src={secondPokemon.data?.sprites.front_default!}
@@ -37,6 +49,13 @@ const Home: NextPage = () => {
             <div className="text-center capitalize mt-[-1rem]">
               {secondPokemon.data?.name!}
             </div>
+
+            <button
+              className="rounded-none mt-10 bg-white text-black"
+              onClick={(e) => second && voteForRoundest(second, e)}
+            >
+              Rounder
+            </button>
           </div>
         </div>
       </div>
