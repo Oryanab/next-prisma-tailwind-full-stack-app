@@ -1,12 +1,12 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import { getOptionsForVote } from "../utils/getRandomPokemon";
 import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const { data, isLoading } = trpc.useQuery(["hello", { text: "oryan" }]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (data) return <div>{data.greeting}</div>;
+  const [first, second] = getOptionsForVote();
 
   return (
     <div>
@@ -14,9 +14,9 @@ const Home: NextPage = () => {
         <div className="text-2xl text-center">first</div>
         <div className="p-2"></div>
         <div className="border rounded p-5 flex justify-between items-center max-w-4xl">
-          <div className="w-20 h-20 bg-red-200"></div>
+          <div className="w-20 h-20 bg-red-400">{first}</div>
           <div className="p-20">Vs</div>
-          <div className="w-20 h-20 bg-red-200"></div>
+          <div className="w-20 h-20 bg-red-400">{second}</div>
         </div>
       </div>
     </div>
