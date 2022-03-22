@@ -11,8 +11,16 @@ const Home: NextPage = () => {
   const secondPokemon = trpc.useQuery(["get-pokemon-by-id", { id: second! }]);
   if (firstPokemon.isLoading || secondPokemon.isLoading) return null;
 
-  const voteForRoundest = (selected: number, e: React.MouseEvent) => {
-    e.preventDefault();
+  const voteForRoundest = (selected: number) => {
+    if (selected === first) {
+      trpc
+        .useMutation(["cast-vote"])
+        .mutate({ votedFor: first, votedAgainst: second! });
+    } else {
+      trpc
+        .useMutation(["cast-vote"])
+        .mutate({ votedFor: second!, votedAgainst: first! });
+    }
     updateIds(getOptionsForVote());
   };
 
@@ -33,7 +41,7 @@ const Home: NextPage = () => {
             </div>
             <button
               className="rounded-none mt-10 bg-white text-black"
-              onClick={(e) => first && voteForRoundest(first, e)}
+              onClick={() => voteForRoundest(first!)}
             >
               Rounder
             </button>
@@ -52,7 +60,7 @@ const Home: NextPage = () => {
 
             <button
               className="rounded-none mt-10 bg-white text-black"
-              onClick={(e) => second && voteForRoundest(second, e)}
+              onClick={() => voteForRoundest(second!)}
             >
               Rounder
             </button>
